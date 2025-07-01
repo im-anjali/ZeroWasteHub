@@ -10,7 +10,9 @@ const Navbar = () => {
   return (
     <nav className="bg-green-600 text-white shadow-md">
       <div className="container mx-auto flex justify-between items-center p-4">
-        <h1 className="text-2xl font-bold">ZeroWasteHub</h1>
+        <Link to="/" className="text-2xl font-bold hover:text-white">
+        ZeroWasteHub
+        </Link>
         <div className="md:hidden" onClick={toggleMenu}>
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </div>
@@ -18,9 +20,8 @@ const Navbar = () => {
           <li><Link to="/about" className="hover:text-black-300">About</Link></li>
           <li><Link to="/login" className="hover:text-white-300">Login</Link></li>
           <li><Link to="/signup" className="hover:text-white-300">Sign Up</Link></li>
-          <li><Link to="/achivements" className="hover:text-white-300">Achievements</Link></li>
+          <li><Link to="/achievements" className="hover:text-white-300">Achievements</Link></li>
 
-          
         </ul>
       </div>
 

@@ -31,4 +31,4 @@ function Achievements() {
   )
 }
 
-export default Achievements
+export default Achievements;
