@@ -4,13 +4,12 @@ import Navbar from "./components/Navbar";
 import Achievements from "./pages/Achievements";
 import About from "./pages/About";
 import Home from "./pages/Home";
-import Login from "./components/LoginPage";
 import SignUp from "./components/SignupPage";
 import RequestorDashboard from "./pages/dashboards/RequestorDashboard";
 
 const App = () => {
   return (
-    <Router>
+   <>
       <Navbar />
       <Routes>
         <Route path="/requestor-dashboard" element={<RequestorDashboard />} />
@@ -20,7 +19,7 @@ const App = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/achievements" element={<Achievements/>}/>
       </Routes>
-    </Router>
+  </>
   );
 };
 
