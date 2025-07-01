@@ -1,77 +1,157 @@
 require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
+const passport = require('passport');
+const session = require('express-session');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const app = express();
-app.use(express.json());
-app.use(cors());
 
+// MongoDB Connection
 mongoose.connect('mongodb://localhost:27017/oauth-roles', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}).then(() => console.log('MongoDB connected'))
-  .catch(err => console.log('MongoDB error:', err));
+}).then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.log('❌ MongoDB error:', err));
 
-const userSchema = new mongoose.Schema({
+// Mongoose Schema
+const UserSchema = new mongoose.Schema({
+  googleId: String,
   name: String,
-  email: { type: String, unique: true },
-  password: String,
+  email: String,
   role: String
 });
+const User = mongoose.model('User', UserSchema);
 
-const User = mongoose.model('User', userSchema);
+// Express Session
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'defaultsecret',
+  resave: false,
+  saveUninitialized: false
+}));
 
+// Passport Setup
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.post('/signup', async (req, res) => {
-  const { name, email, password, role } = req.body;
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: 'User already exists' });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = new User({ name, email, password: hashedPassword, role });
-    await user.save();
-
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '2h' });
-    res.status(201).json({ token, user: { name, email, role } });
-  } catch (err) {
-    res.status(500).json({ message: 'Signup error', error: err.message });
-  }
+passport.serializeUser((user, done) => {
+  console.log("🔐 Serializing user:", user.id);
+  done(null, user.id);
+});
+passport.deserializeUser((id, done) => {
+  console.log("🧠 Deserializing user:", id);
+  User.findById(id).then(user => done(null, user));
 });
 
+// Debugging .env values
+console.log("\n🔧 OAuth Setup:");
+console.log("Client ID:", process.env.GOOGLE_CLIENT_ID);
+console.log("Secret:", process.env.GOOGLE_CLIENT_SECRET);
+console.log("Callback URL:", process.env.GOOGLE_CALLBACK_URL, '\n');
 
-app.post('/login', async (req, res) => {
-  const { email, password, role } = req.body;
+// Google Strategy
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.GOOGLE_CALLBACK_URL,
+  passReqToCallback: true
+}, async (req, accessToken, refreshToken, profile, done) => {
+  const role = req.session.selectedRole;
+  const mode = req.session.authMode;
+  console.log("🔁 Google callback triggered");
+  console.log("🎯 Role from session:", role);
+  console.log("⚙️  Mode from session:", mode);
+  console.log("👤 Google Profile:", profile.displayName);
+
   try {
-    const user = await User.findOne({ email });
-    if (!user || user.role !== role) return res.status(400).json({ message: 'Invalid credentials' });
+    let user = await User.findOne({ googleId: profile.id });
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ message: 'Invalid credentials' });
+    if (mode === 'login') {
+      console.log("🔐 Login mode");
+      if (!user) return done(null, false);
+      if (user.role !== role) return done(null, false);
+      return done(null, user);
+    }
 
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '2h' });
-    res.status(200).json({ token, user: { name: user.name, email: user.email, role: user.role } });
-  } catch (err) {
-    res.status(500).json({ message: 'Login error', error: err.message });
+    if (mode === 'signup') {
+  console.log("🆕 Signup mode");
+  if (user) {
+    if (user.role !== role) {
+      console.log(`📝 Updating user role from ${user.role} to ${role}`);
+      user.role = role;
+      await user.save();
+    } else {
+      console.log(`ℹ️ User already has role ${role}`);
+    }
+    return done(null, user);
   }
-});
 
+  console.log("✨ Creating new user");
+  user = new User({
+    googleId: profile.id,
+    name: profile.displayName,
+    email: profile.emails[0].value,
+    role: role || 'donor'
+  });
+  await user.save();
+  console.log("✅ New user saved:", user.name);
+  return done(null, user);
+}
+ } catch (err) {
+    console.error("❌ Error in Google Strategy:", err);
+    return done(err, null);
+  }
+}));
 
+// Root Test Route
+app.get('/', (req, res) => res.send('🌍 OAuth Server Running'));
+
+// OAuth Initiation
+app.get('/auth/google', (req, res, next) => {
+  console.log("🚀 /auth/google called");
+  console.log("📦 Query Params:", req.query);
+  req.session.selectedRole = req.query.role;
+  req.session.authMode = req.query.mode;
+  console.log("💾 Session role set to:", req.session.selectedRole);
+  console.log("💾 Session mode set to:", req.session.authMode);
+  next();
+}, passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// Callback Route
+app.get('/auth/google/callback',
+  passport.authenticate('google', {
+    failureRedirect: 'http://localhost:5173/login?error=invalid'
+  }),
+  (req, res) => {
+    const role = req.user.role;
+    console.log("✅ Auth success, redirecting based on role:", role);
+
+    const routeMap = {
+      admin: 'admin-dashboard',
+      ngo: 'ngo-dashboard',
+      donor: 'donor-dashboard',
+      volunteer: 'volunteer-dashboard',
+      requestor: 'requestor-dashboard'
+    };
+
+    const redirectPath = routeMap[role] || 'dashboard';
+    console.log("➡️  Redirect path:", redirectPath);
+    res.redirect(`http://localhost:5173/${redirectPath}`);
+  }
+);
+
+// Check Current User
 app.get('/user', (req, res) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'Token missing' });
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    res.json({ message: 'Protected data', user: decoded });
-  } catch (err) {
-    res.status(401).json({ message: 'Invalid token' });
+  if (req.isAuthenticated()) {
+    console.log("🔓 User authenticated:", req.user.name);
+    res.json(req.user);
+  } else {
+    console.log("❌ Not logged in");
+    res.status(401).json({ message: 'Not logged in' });
   }
 });
 
+// Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
