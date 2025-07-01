@@ -6,13 +6,14 @@ import About from "./pages/About";
 import Home from "./pages/Home";
 import Login from "./components/LoginPage";
 import SignUp from "./components/SignupPage";
-
+import RequestorDashboard from "./pages/dashboards/RequestorDashboard";
 
 const App = () => {
   return (
     <Router>
       <Navbar />
       <Routes>
+        <Route path="/requestor-dashboard" element={<RequestorDashboard />} />
         <Route path="/" element={<Home/>}/>
         <Route path="/about" element={<About/>} />
         <Route path="/login" element={<Login />} />
