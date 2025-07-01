@@ -5,7 +5,6 @@ const About = () => {
   return (
     <div className="bg-white min-h-screen text-gray-800 px-6 py-12">
       <div className="max-w-4xl mx-auto space-y-12">
-       
         <h1 className="text-4xl font-bold text-green-700">About ZeroWasteHub</h1>
 
         
