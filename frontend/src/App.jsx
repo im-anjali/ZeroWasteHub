@@ -6,7 +6,7 @@ import About from "./pages/About";
 import Home from "./pages/Home";
 import SignUp from "./components/SignupPage";
 import RequestorDashboard from "./pages/dashboards/RequestorDashboard";
-
+import LoginPage from "./components/LoginPage";
 const App = () => {
   return (
    <>
@@ -17,6 +17,7 @@ const App = () => {
         <Route path="/about" element={<About/>} />
         <Route path="/home" element={<Home/>} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/achievements" element={<Achievements/>}/>
       </Routes>
   </>

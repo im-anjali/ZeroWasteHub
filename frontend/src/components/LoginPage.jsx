@@ -9,34 +9,36 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const { update } = useContext(AuthContext);
 
-  const handleLogin = async () => {
-    try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
-        { email, password, role: selectedRole }
-      );
+const handleLogin = async () => {
+  try {
+    const { data } = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
+      { email, password, role: selectedRole.toLowerCase() }  // 💥 fix here
+    );
 
-      const token = data.token;
-      if (!token) {
-        console.log("No token found");
-        return;
-      }
-
-      localStorage.setItem("token", token);
-
-      const user = {
-        ...data.user,
-        token: token,
-      };
-
-      update(user); // update context
-      console.log("User logged in:", user);
-
-      alert(`Login success as ${data.user.role}`);
-    } catch (err) {
-      alert(err.response?.data?.message || "Login error");
+    const token = data.token;
+    if (!token) {
+      console.log("No token found");
+      return;
     }
-  };
+
+    localStorage.setItem("token", token);
+
+    const user = {
+      ...data.user,
+      token: token,
+    };
+
+    update(user); // update context
+    console.log("User logged in:", user);
+
+    alert(`Login success as ${data.user.role}`);
+  } catch (err) {
+    console.error("❌ Login error:", err); // helpful for debugging
+    alert(err.response?.data?.message || "Login error");
+  }
+};
+
 
   return (
     <div className="flex flex-col items-center p-10 mt-20 space-y-4">
@@ -70,7 +72,7 @@ const Login = () => {
         <option value="ngo">NGO</option>
         <option value="donor">Donor</option>
         <option value="volunteer">Volunteer</option>
-        <option value="receiver">Receiver</option>
+        <option value="requestor">Requestor</option>
       </select>
 
       <button

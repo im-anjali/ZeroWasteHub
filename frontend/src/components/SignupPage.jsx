@@ -60,7 +60,7 @@ const SignupForm = () => {
   <option value="ngo">NGO</option>
   <option value="donor">Donor</option>
   <option value="volunteer">Volunteer</option>
-  <option value="receiver">Receiver</option>
+  <option value="requestor">Requestor</option>
 </select>
 
 
@@ -70,10 +70,17 @@ const SignupForm = () => {
       >
         Sign Up
       </button>
+      <button className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 w-96" onClick={() => {
+      if (!selectedRole) {
+        alert("Please select a role first.");
+        return;
+      }
+      window.location.href = `http://localhost:5000/auth/google?role=${selectedRole}&mode=signup`;
+      }}>Sign Up with Google</button>
 
       <p className="text-sm">
         Already have an account?{" "}
-        <Link to="/" className="text-blue-600 hover:underline">
+        <Link to="/login" className="text-blue-600 hover:underline">
           Login
         </Link>
       </p>
