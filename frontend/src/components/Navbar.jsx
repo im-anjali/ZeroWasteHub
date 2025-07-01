@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-
+import logo from '../assets/logo.png'; 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -10,9 +10,7 @@ const Navbar = () => {
   return (
     <nav className="bg-green-600 text-white shadow-md">
       <div className="container mx-auto flex justify-between items-center p-4">
-        <Link to="/" className="text-2xl font-bold hover:text-white">
-        ZeroWasteHub
-        </Link>
+        
         <div className="md:hidden" onClick={toggleMenu}>
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </div>
