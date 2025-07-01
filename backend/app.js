@@ -1,23 +1,49 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
+const session = require('express-session');
+const passport = require('passport');
 const cors = require('cors');
+const connectDB = require('./connectDB/connectdb');
+require('./config/passport'); // Passport config (Google Strategy)
 const authRoutes = require('./routes/userRoutes');
-const connectDb = require("./connectDB/connectdb")
+const oauthRoutes = require('./routes/googleOAuthRoutes'); // Your Google OAuth routes
+
+
 const app = express();
-require('dotenv').config();
+
+// Connect to MongoDB
+connectDB();
+
+// Middlewares
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'defaultsecret',
+  resave: false,
+  saveUninitialized: false
+}));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Routes
 app.use('/api/auth', authRoutes);
+app.use('/', oauthRoutes);// All /auth/google routes handled here
 
 // Default route
 app.get('/', (req, res) => {
-  res.send('Welcome to the Auth API');
+  res.send('🌍 ZeroWasteHub Auth API running');
 });
-const PORT = 5000 || process.env.PORT;
+
+// Start server
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+console.log('✅ Loaded Passport strategies:', Object.keys(passport._strategies));
 module.exports = app;
+
