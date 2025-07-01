@@ -23,7 +23,7 @@ const Navbar = () => {
         </div>
         <ul className="hidden md:flex space-x-8 text-lg">
           <li><Link to="/about" className="hover:text-black-300">About</Link></li>
-          <li><Link to="/login" className="hover:text-white-300">Login</Link></li>
+          <li><Link to="/" className="hover:text-white-300">Login</Link></li>
           <li><Link to="/signup" className="hover:text-white-300">Sign Up</Link></li>
           <li><Link to="/achievements" className="hover:text-white-300">Achievements</Link></li>
 

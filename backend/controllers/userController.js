@@ -1,38 +1,14 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
+const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const cors = require('cors');
 
-const app = express();
-app.use(express.json());
-app.use(cors());
-
-mongoose.connect('mongodb://localhost:27017/oauth-roles', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => console.log('MongoDB connected'))
-  .catch(err => console.log('MongoDB error:', err));
-
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: { type: String, unique: true },
-  password: String,
-  role: String
-});
-
-const User = mongoose.model('User', userSchema);
-
-
-app.post('/signup', async (req, res) => {
+exports.signup = async (req, res) => {
   const { name, email, password, role } = req.body;
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const user = new User({ name, email, password: hashedPassword, role });
     await user.save();
 
@@ -41,10 +17,9 @@ app.post('/signup', async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Signup error', error: err.message });
   }
-});
+};
 
-
-app.post('/login', async (req, res) => {
+exports.login = async (req, res) => {
   const { email, password, role } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -58,10 +33,9 @@ app.post('/login', async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Login error', error: err.message });
   }
-});
+};
 
-
-app.get('/user', (req, res) => {
+exports.getUser = (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ message: 'Token missing' });
 
@@ -71,7 +45,4 @@ app.get('/user', (req, res) => {
   } catch (err) {
     res.status(401).json({ message: 'Invalid token' });
   }
-});
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+};
