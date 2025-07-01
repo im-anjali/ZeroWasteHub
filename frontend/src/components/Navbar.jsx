@@ -10,7 +10,14 @@ const Navbar = () => {
   return (
     <nav className="bg-green-600 text-white shadow-md">
       <div className="container mx-auto flex justify-between items-center p-4">
-        
+        <Link to="/" className="flex items-center gap-2 hover:opacity-90">
+      <img
+        src={logo}
+        alt="Logo"
+        className="w-7 h-7 object-contain rounded-md"
+      />
+      <span className="text-2xl font-bold">ZeroWasteHub</span>
+    </Link>
         <div className="md:hidden" onClick={toggleMenu}>
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </div>
