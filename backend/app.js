@@ -11,7 +11,7 @@ const uploadImage = require('./routes/imageUploadRoutes')
 const multer = require('multer');
 const { MongoClient, GridFSBucket } = require('mongodb');
 const app = express();
-
+const donationRoutes = require('./routes/donationRoutes')
 // Connect to MongoDB
 connectDB();
 
@@ -35,6 +35,7 @@ app.use(passport.session());
 app.use('/api/auth', authRoutes);
 app.use('/', oauthRoutes);// All /auth/google routes handled here
 app.use("/api", uploadImage);
+app.use('/donation', donationRoutes);
 // Default route
 app.get('/', (req, res) => {
   res.send(' ZeroWasteHub Auth API running');

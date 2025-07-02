@@ -27,7 +27,10 @@ const donationSchema = new mongoose.Schema({
         type:Date,
         required:true
     }, 
-      imageFilename: String,
+      imageFileId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
     status:{
         type: String, 
         enum: ['pending', 'approved', 'matched', 'delivered'], 
