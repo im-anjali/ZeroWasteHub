@@ -1,5 +1,5 @@
-const passport = require('passport');
 const express = require('express');
+const passport = require('passport');
 const router = express.Router();
 
 router.get('/auth/google', (req, res, next) => {
