@@ -1,36 +1,61 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Search, ClipboardList } from 'lucide-react';
+
 const RequestorDashboard = () => {
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-green-700">Welcome, Requestor!</h1>
-
-      {/* Section 1: Browse Items */}
-      <div className="bg-white rounded-xl shadow-md p-5 mb-6">
-        <h2 className="text-xl font-semibold mb-3">🛒 Browse Available Items</h2>
-        <p className="text-gray-600 mb-3">View and request items donated by individuals and organizations.</p>
-        <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-          Browse Items
-        </button>
+    <div className="min-h-screen bg-gray-50 py-10 px-6">
+      {/* Heading */}
+      <div className="max-w-4xl mx-auto mb-10 text-center">
+        <h1 className="text-3xl font-bold text-gray-800">Requestor Dashboard</h1>
+        <p className="text-gray-500 text-base mt-2">Browse and track your requested items</p>
       </div>
 
-      {/* Section 2: Track Received Items */}
-      <div className="bg-white rounded-xl shadow-md p-5 mb-6">
-        <h2 className="text-xl font-semibold mb-3">📦 Track Received Items</h2>
-        <p className="text-gray-600 mb-3">Keep track of what items you’ve received and their status.</p>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-          View History
-        </button>
-      </div>
+      {/* Cards */}
+      <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <DashboardCard
+          to="/requestor/browse"
+          title="Browse Items"
+          description="Find and request donated items"
+          icon={<Search size={28} className="text-blue-600" />}
+          bg="bg-blue-100"
+        />
 
-      {/* Section 3: Preferences */}
-      <div className="bg-white rounded-xl shadow-md p-5">
-        <h2 className="text-xl font-semibold mb-3">⚙️ Set Your Preferences</h2>
-        <p className="text-gray-600 mb-3">Customize your interests and priority needs to get relevant matches.</p>
-        <button className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800">
-          Edit Preferences
-        </button>
+        <DashboardCard
+          to="/requestor/requests"
+          title="My Requests"
+          description="Track the status of your requests"
+          icon={<ClipboardList size={28} className="text-green-600" />}
+          bg="bg-green-100"
+        />
+      </div><br/><br/>
+      <div className="mt-12 flex flex-col items-center">
+        <div className="w-40 h-40 rounded-full border-[10px] border-green-500 flex items-center justify-center bg-white shadow-md">
+          <span className="text-5xl font-extrabold text-green-600">3</span>
+        </div>
+        <p className="mt-4 text-base font-medium text-gray-700">Active Requests</p>
       </div>
     </div>
   );
 };
 
+const DashboardCard = ({ to, title, description, icon, bg }) => (
+  <Link
+    to={to}
+    className="p-6 bg-white rounded-2xl shadow-sm border border-gray-200 hover:shadow-md transition"
+  >
+    <div className="flex items-start space-x-4">
+      <div className={`p-3 rounded-full ${bg}`}>
+        {icon}
+      </div>
+      <div>
+        <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+        <p className="text-sm text-gray-500">{description}</p>
+      </div>
+    </div>
+  </Link>
+);
+
 export default RequestorDashboard;
+
+
