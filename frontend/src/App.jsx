@@ -7,11 +7,13 @@ import Home from "./pages/Home";
 import SignUp from "./components/SignupPage";
 import RequestorDashboard from "./pages/dashboards/RequestorDashboard";
 import LoginPage from "./components/LoginPage";
+import VolunteerDashboard from "./pages/dashboards/VolunteerDashboard";
 const App = () => {
   return (
    <>
       <Navbar />
       <Routes>
+        <Route path = "/volunteer-dashboard" element={<VolunteerDashboard/>}/>
         <Route path="/requestor-dashboard" element={<RequestorDashboard />} />
         <Route path="/" element={<Home/>}/>
         <Route path="/about" element={<About/>} />

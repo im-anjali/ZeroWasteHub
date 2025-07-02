@@ -2,18 +2,21 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [selectedRole, setSelectedRole] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { update } = useContext(AuthContext);
+  const navigate = useNavigate();
+
 
 const handleLogin = async () => {
   try {
     const { data } = await axios.post(
       `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
-      { email, password, role: selectedRole.toLowerCase() }  // 💥 fix here
+      { email, password, role: selectedRole.toLowerCase() }  
     );
 
     const token = data.token;
@@ -29,12 +32,29 @@ const handleLogin = async () => {
       token: token,
     };
 
-    update(user); // update context
-    console.log("User logged in:", user);
-
-    alert(`Login success as ${data.user.role}`);
+    update(user); 
+    switch (data.user.role) {
+      case "admin":
+        navigate("/admin-dashboard");
+        break;
+      case "ngo":
+        navigate("/ngo-dashboard");
+        break;
+      case "donor":
+        navigate("/donor-dashboard");
+        break;
+      case "volunteer":
+        navigate("/volunteer-dashboard");
+        break;
+      case "receiver":
+      case "requestor": 
+        navigate("/requestor-dashboard");
+        break;
+      default:
+        navigate("/dashboard");
+        break;
+    }
   } catch (err) {
-    console.error("❌ Login error:", err); // helpful for debugging
     alert(err.response?.data?.message || "Login error");
   }
 };
