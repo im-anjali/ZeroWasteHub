@@ -4,9 +4,8 @@ import axios from 'axios';
 const TempBrowseItems = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [donations, setDonations] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); 
 
-  // Fetch donations on component mount
   useEffect(() => {
     const fetchDonations = async () => {
       try {
@@ -35,7 +34,6 @@ const TempBrowseItems = () => {
         </p>
       </div>
 
-      {/* Search Bar */}
       <div className="max-w-md mx-auto mb-8">
         <input
           type="text"
@@ -46,7 +44,6 @@ const TempBrowseItems = () => {
         />
       </div>
 
-      {/* Conditional rendering */}
       {loading ? (
         <div className="text-center text-gray-500">Loading donations...</div>
       ) : filteredDonations.length === 0 ? (
@@ -58,6 +55,15 @@ const TempBrowseItems = () => {
               key={item._id}
               className="bg-white rounded-xl shadow-sm border p-5"
             >
+              
+              {item.imageUrl && (
+                <img
+                  src={item.imageUrl}
+                  alt={item.itemName}
+                  className="w-full h-40 object-cover mb-4 rounded"
+                />
+              )}
+
               <h2 className="text-lg font-semibold text-gray-800 mb-1">
                 {item.itemName}
               </h2>
@@ -71,7 +77,7 @@ const TempBrowseItems = () => {
                 Pickup Address: <span className="font-medium">{item.pickupAddress}</span>
               </p>
               <p className="text-sm text-gray-600 mb-3">
-                Pickup Date: <span className="font-medium">{item.pickupDate}</span>
+                Pickup Date: <span className="font-medium">{new Date(item.pickupDate).toLocaleDateString()}</span>
               </p>
               <button className="mt-2 px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition">
                 Request
