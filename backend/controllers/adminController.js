@@ -1,6 +1,6 @@
 const PendingDonation = require("../models/pendingDonationModel");
 const Donation = require("../models/postDonationModel")
-
+const RejectedDonation = require("../models/rejectedDonationModel");
 const getPendingDonations = async(req, res) =>{
     try {
         const pending = await PendingDonation.find({});
@@ -31,13 +31,33 @@ const approveDonation = async(req, res) =>{
     }
 }
 
-const rejectDonation = async(req, res) =>{
-    try {
-        const {id} = req.params;
-        await PendingDonation.findByIdAndDelete(id);
-            res.json({ message: 'donation request rejected and deleted' });
-    } catch (error) {
-            res.status(500).json({ message: 'Rejection failed' });
+const rejectDonation = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+    
+    const rejected = await PendingDonation.findByIdAndDelete(id);
+    
+    if (!rejected) {
+      return res.status(404).json({ message: 'pending donation not found' });
     }
-}
+
+    const rejectedDonation = new RejectedDonation({
+      ...rejected._doc,
+      reason
+    });
+
+    await rejectedDonation.save();
+
+    res.status(200).json({
+      message: 'donation request rejected and saved to rejected collection',
+      rejectedDonation
+    });
+  } catch (error) {
+    console.error('rejection error:', error);
+    res.status(500).json({ message: 'rejection failed' });
+  }
+};
+
+
 module.exports = {getPendingDonations, approveDonation, rejectDonation}

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const pendingDonationSchema = new mongoose.Schema({
+const rejectedDonationSchema = new mongoose.Schema({
   donor: { type: String, required: true }, 
   itemName: { type: String, required: true },
   quantity: { type: String, required: true },
@@ -12,4 +12,4 @@ const pendingDonationSchema = new mongoose.Schema({
   reason:{type:String}
 });
 
-module.exports = mongoose.model('PendingDonation', pendingDonationSchema);
+module.exports = mongoose.model('RejectedDonation', rejectedDonationSchema);
