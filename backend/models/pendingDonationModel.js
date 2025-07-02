@@ -9,7 +9,12 @@ const pendingDonationSchema = new mongoose.Schema({
   pickupDate: { type: Date, required: true },
   imageFileId: { type: mongoose.Schema.Types.ObjectId, required: true },
   createdAt: { type: Date, default: Date.now },
-  reason:{type:String}
+  reason:{type:String},
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending',
+  },
 });
 
 module.exports = mongoose.model('PendingDonation', pendingDonationSchema);
