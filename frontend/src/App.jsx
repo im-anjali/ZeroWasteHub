@@ -8,15 +8,17 @@ import SignUp from "./components/SignupPage";
 import RequestorDashboard from "./pages/dashboards/RequestorDashboard";
 import LoginPage from "./components/LoginPage";
 import VolunteerDashboard from "./pages/dashboards/VolunteerDashboard";
-import BrowseItems from "./pages/requestor/TempBrowseItems";
+import TempBrowseItems from "./pages/requestor/TempBrowseItems";
+import MyRequests from "./pages/requestor/MyRequests";
 const App = () => {
   return (
    <>
       <Navbar />
       <Routes>
-        <Route path="/requestor/browse" element={<TempBrowseItems/>} />
         <Route path = "/volunteer-dashboard" element={<VolunteerDashboard/>}/>
         <Route path="/requestor-dashboard" element={<RequestorDashboard />} />
+        <Route path="/requestor/browse" element={<TempBrowseItems/>} />
+        <Route path="/requestor/requests" element={<MyRequests/>} />
         <Route path="/" element={<Home/>}/>
         <Route path="/about" element={<About/>} />
         <Route path="/home" element={<Home/>} />
