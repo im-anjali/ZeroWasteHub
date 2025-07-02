@@ -10,6 +10,7 @@ import LoginPage from "./components/LoginPage";
 import VolunteerDashboard from "./pages/dashboards/VolunteerDashboard";
 import TempBrowseItems from "./pages/requestor/TempBrowseItems";
 import MyRequests from "./pages/requestor/MyRequests";
+import DonorDashboard from "./pages/dashboards/DonorDashboard";
 const App = () => {
   return (
    <>
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/achievements" element={<Achievements/>}/>
+         <Route path="/donations" element={<DonorDashboard/>}/>
       </Routes>
   </>
   );
