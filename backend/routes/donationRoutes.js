@@ -8,4 +8,5 @@ router.get("/getDonations", getDonation);
 router.get("/image/:id", getImage); 
 
 router.post("/pending-donations", postDonation.requestDonation)
+router.get("/mydonations", postDonation.getMyDonations);
 module.exports = router;

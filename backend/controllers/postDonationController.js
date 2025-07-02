@@ -64,5 +64,13 @@ const requestDonation = async (req, res) => {
   }
 };
 
-
-module.exports = {postDonation, requestDonation};
+const getMyDonations = async(req, res) =>{
+    try {
+      const userId = req.user.id;
+      const donations = await Donation.find({donor:userId});
+      res.status(200).json(donations);
+    } catch (error) {
+          res.status(500).json({ message: 'Server error' });
+    }
+}
+module.exports = {postDonation, requestDonation, getMyDonations};
