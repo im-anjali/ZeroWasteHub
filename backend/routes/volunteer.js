@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const Delivery = require('../models/Delivery'); // Schema for delivery requests
+const Delivery = require('../models/delivery'); // Schema for delivery requests
 const User = require('../models/userModel');
 
 // Middleware to verify role

@@ -7,8 +7,9 @@ const connectDB = require('./connectDB/connectdb');
 require('./config/passport'); // Passport config (Google Strategy)
 const authRoutes = require('./routes/userRoutes');
 const oauthRoutes = require('./routes/googleOAuthRoutes'); // Your Google OAuth routes
-
-
+const uploadImage = require('./routes/imageUploadRoutes')
+const multer = require('multer');
+const { MongoClient, GridFSBucket } = require('mongodb');
 const app = express();
 
 // Connect to MongoDB
@@ -33,18 +34,18 @@ app.use(passport.session());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/', oauthRoutes);// All /auth/google routes handled here
-
+app.use("/api", uploadImage);
 // Default route
 app.get('/', (req, res) => {
-  res.send('🌍 ZeroWasteHub Auth API running');
+  res.send(' ZeroWasteHub Auth API running');
 });
 
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(` Server running on http://localhost:${PORT}`);
 });
-console.log('✅ Loaded Passport strategies:', Object.keys(passport._strategies));
+console.log(' Loaded Passport strategies:', Object.keys(passport._strategies));
 module.exports = app;
 
 //vol dashboard
