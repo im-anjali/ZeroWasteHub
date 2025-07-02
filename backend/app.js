@@ -47,3 +47,8 @@ app.listen(PORT, () => {
 console.log('✅ Loaded Passport strategies:', Object.keys(passport._strategies));
 module.exports = app;
 
+//vol dashboard
+const volunteerRoutes = require('./routes/volunteer');
+app.use('/api/volunteer', volunteerRoutes);
+
+
