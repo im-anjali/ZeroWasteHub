@@ -4,6 +4,10 @@ const Donation = require("../models/postDonationModel")
 const getPendingDonations = async(req, res) =>{
     try {
         const pending = await PendingDonation.find({});
+        // const withUrls = pending.map(d=>({
+        //     ...d._doc, 
+        //     imageUrl: `${process.env.BACKEND_BASE_URL || 'http://localhost:5000'}/donation/image/${d.imageFileId}`
+        // }));
         res.json(pending);
     } catch (error) {
         res.status(500).json({message:'fail to fetch donations'})

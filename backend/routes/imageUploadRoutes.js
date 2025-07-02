@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose'); 
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const { MongoClient, GridFSBucket } = require('mongodb');
@@ -57,5 +58,6 @@ router.get('/image/:id', async (req, res) => {
     res.status(404).send('Image not found');
   }
 });
+
 
 module.exports = router
