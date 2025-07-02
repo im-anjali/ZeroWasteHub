@@ -37,7 +37,7 @@ function DonorDashboard() {
 
       const donationData = { ...formData, imageFileId };
 
-      const donationRes = await axios.post(' http://localhost:5000/donation/postDonation', donationData);
+      const donationRes = await axios.post(' http://localhost:5000/donation/pending-donations', donationData);
 
       setMessage(' Donation posted successfully!');
     } catch (error) {

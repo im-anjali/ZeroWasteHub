@@ -45,4 +45,17 @@ router.post('/upload', upload.array('files'), async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 })
+router.get('/image/:id', async (req, res) => {
+  const client = await mongoClient.connect();
+  const db = client.db(process.env.DB_NAME);
+  const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
+
+  try {
+    const downloadStream = bucket.openDownloadStream(new mongoose.Types.ObjectId(req.params.id));
+    downloadStream.pipe(res);
+  } catch (err) {
+    res.status(404).send('Image not found');
+  }
+});
+
 module.exports = router

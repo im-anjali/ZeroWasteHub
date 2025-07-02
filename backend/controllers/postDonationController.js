@@ -31,4 +31,38 @@ const postDonation = async(req, res) =>{
   res.status(500).json({ error: 'Failed to save donation' });
     }
 }
-module.exports = postDonation;
+const PendingDonation = require('../models/pendingDonationModel');
+const pendingDonationModel = require('../models/pendingDonationModel');
+
+const requestDonation = async (req, res) => {
+  try {
+    const {
+      donor,
+      itemName,
+      quantity,
+      condition,
+      pickupAddress,
+      pickupDate,
+      imageFileId
+    } = req.body;
+
+    const pendingDonation = new PendingDonation({
+      donor,
+      itemName,
+      quantity,
+      condition,
+      pickupAddress,
+      pickupDate,
+      imageFileId
+    });
+
+    const savedPending = await pendingDonation.save();
+    res.status(201).json({ message: 'Donation request sent to admin for approval.', pendingDonation: savedPending });
+  } catch (error) {
+    console.error('Error saving pending donation:', error);
+    res.status(500).json({ error: 'Failed to submit donation request' });
+  }
+};
+
+
+module.exports = {postDonation, requestDonation};

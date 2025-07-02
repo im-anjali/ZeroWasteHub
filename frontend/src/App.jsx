@@ -11,6 +11,7 @@ import VolunteerDashboard from "./pages/dashboards/VolunteerDashboard";
 import TempBrowseItems from "./pages/requestor/TempBrowseItems";
 import MyRequests from "./pages/requestor/MyRequests";
 import DonorDashboard from "./pages/dashboards/DonorDashboard";
+import AdminDashboard from "./pages/dashboards/AdminDashboard";
 const App = () => {
   return (
    <>
@@ -27,6 +28,7 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/achievements" element={<Achievements/>}/>
          <Route path="/donations" element={<DonorDashboard/>}/>
+           <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Routes>
   </>
   );
