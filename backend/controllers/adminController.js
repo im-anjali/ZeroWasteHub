@@ -1,8 +1,8 @@
-const PendingDonation = require("../models/pendingDonationModel");
-const Donation = require("../models/postDonationModel")
+const Donation = require("../models/donation");
+
 const getPendingDonations = async (req, res) => {
   try {
-    const donations = await PendingDonation.find({});
+    const donations = await Donation.find({});
     const pendingDonations = donations.filter(d => d.status === "pending");
     res.json(pendingDonations);
   } catch (error) {
@@ -13,10 +13,9 @@ const getPendingDonations = async (req, res) => {
 const approveDonation = async (req, res) => {
   try {
     const { id } = req.params;
-    const donation = await PendingDonation.findById(id);
-    const approvedDonation = new Donation(donation._doc);
-    await approvedDonation.save();
-    const updated = await PendingDonation.findByIdAndUpdate(
+    const donation = await Donation.findById(id);
+ 
+    const updated = await Donation.findByIdAndUpdate(
       id,
       { status: 'approved' },
       { new: true }
@@ -37,7 +36,7 @@ const rejectDonation = async (req, res) => {
     const { id } = req.params;
     const { reason } = req.body || {};
 
-    const updated = await PendingDonation.findByIdAndUpdate(
+    const updated = await Donation.findByIdAndUpdate(
       id,
       { status: 'rejected', reason },
       { new: true }

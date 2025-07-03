@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const rejectedDonationSchema = new mongoose.Schema({
+const donation = new mongoose.Schema({
   donor: { type: String, required: true }, 
   itemName: { type: String, required: true },
   quantity: { type: String, required: true },
@@ -9,7 +9,12 @@ const rejectedDonationSchema = new mongoose.Schema({
   pickupDate: { type: Date, required: true },
   imageFileId: { type: mongoose.Schema.Types.ObjectId, required: true },
   createdAt: { type: Date, default: Date.now },
-  reason:{type:String}
+  reason:{type:String},
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected', 'completed'],
+    default: 'pending',
+  },
 });
 
-module.exports = mongoose.model('RejectedDonation', rejectedDonationSchema);
+module.exports = mongoose.model('Donation', donation);

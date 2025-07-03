@@ -7,6 +7,6 @@ router.post("/postDonation", postDonation.postDonation);
 router.get("/getDonations", getDonation);
 router.get("/image/:id", getImage); 
 
-router.post("/pending-donations", postDonation.requestDonation)
+router.post("/pending-donations", postDonation.postDonation)
 router.get("/mydonations", postDonation.getMyDonations);
 module.exports = router;

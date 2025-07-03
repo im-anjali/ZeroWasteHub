@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function DonorDashboard() {
+function PostDonations() {
   const [formData, setFormData] = useState({
     donor: '',
     itemName: '',
@@ -124,4 +124,4 @@ function DonorDashboard() {
   );
 }
 
-export default DonorDashboard;
+export default PostDonations;
