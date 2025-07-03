@@ -1,9 +1,17 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { useEffect } from 'react';
 function DonationDashboard() {
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
 
+    if (!user || user.role !== 'donor') {
+      alert('Access denied. Only donors can access this page.');
+      navigate('/login');
+    }
+  }, [navigate]);
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 pt-10 px-3">
       <h1 className="text-4xl font-bold text-green-800 mb-10">Donor Dashboard</h1>

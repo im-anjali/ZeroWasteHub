@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 const AdminDashboard = () => {
   const [donations, setDonations] = useState([]);
   const [selectedDonations, setSelectedDonations] = useState({});
   const [rejectionReasons, setRejectionReasons] = useState({});
   const [message, setMessage] = useState('');
-
+  const navigate = useNavigate();
+    useEffect(() => {
+      const user = JSON.parse(localStorage.getItem('user'));
+  
+      if (!user || user.role !== 'admin') {
+        alert('Access denied. Only donors can access this page.');
+        navigate('/login');
+      }
+    }, [navigate]);
   useEffect(() => {
     fetchPendingDonations();
   }, []);
