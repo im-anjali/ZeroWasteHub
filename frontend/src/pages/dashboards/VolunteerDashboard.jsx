@@ -19,24 +19,16 @@ export default function VolunteerDashboard() {
   const [loading, setLoading] = useState(false);
 
   const iconStyle = "mr-3 text-green-600 text-xl";
-  const backendURL = import.meta.env.VITE_BACKEND_URL;
-  const token = localStorage.getItem("token");
 
-  const axiosAuth = axios.create({
-    baseURL: backendURL,
-    withCredentials: true,
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
-
-  // Fetch pending requests
   useEffect(() => {
     const fetchRequests = async () => {
       if (!showTasks) return;
       setLoading(true);
       try {
-        const res = await axiosAuth.get(`/api/volunteer/requests`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/volunteer/requests`,
+          { withCredentials: true }
+        );
         setRequests(res.data);
       } catch (err) {
         console.error("Error fetching requests:", err);
@@ -47,12 +39,14 @@ export default function VolunteerDashboard() {
     fetchRequests();
   }, [showTasks]);
 
-  // Fetch active tasks
   useEffect(() => {
     const fetchActive = async () => {
       if (!showActive) return;
       try {
-        const res = await axiosAuth.get(`/api/volunteer/active`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/volunteer/active`,
+          { withCredentials: true }
+        );
         setActiveTasks(res.data);
       } catch (err) {
         console.error("Error fetching active tasks:", err);
@@ -61,12 +55,14 @@ export default function VolunteerDashboard() {
     fetchActive();
   }, [showActive]);
 
-  // Fetch completed history
   useEffect(() => {
     const fetchHistory = async () => {
       if (!showHistory) return;
       try {
-        const res = await axiosAuth.get(`/api/volunteer/history`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/volunteer/history`,
+          { withCredentials: true }
+        );
         setCompletedTasks(res.data);
       } catch (err) {
         console.error("Error fetching completed tasks:", err);
@@ -75,104 +71,44 @@ export default function VolunteerDashboard() {
     fetchHistory();
   }, [showHistory]);
 
-  // Accept task
   const handleAccept = async (id) => {
-  try {
-    await axiosAuth.put(`/api/volunteer/accept/${id}`);
-
-    const acceptedTask = requests.find((r) => r._id === id);
-    if (acceptedTask) {
-      setActiveTasks((prev) => [...prev, { ...acceptedTask, status: "active" }]);
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/volunteer/accept/${id}`,
+        {},
+        { withCredentials: true }
+      );
+      alert("Task Accepted ✅");
+      setRequests((prev) => prev.filter((r) => r._id !== id));
+    } catch (err) {
+      alert("Error accepting task");
+      console.error(err);
     }
+  };
 
-    // Optional: visually update the task's status in the pending list
-    setRequests((prev) =>
-      prev.map((r) => (r._id === id ? { ...r, status: "active" } : r))
-    );
-  } catch (err) {
-    alert("Error accepting task");
-    console.error(err);
-  }
-};
-
-
-  // Complete task
   const handleComplete = async (id) => {
-  try {
-    await axiosAuth.put(`/api/volunteer/complete/${id}`);
-
-    const completedTask = activeTasks.find((t) => t._id === id);
-    if (completedTask) {
-      setCompletedTasks((prev) => [...prev, { ...completedTask, status: "completed" }]);
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/volunteer/complete/${id}`,
+        {},
+        { withCredentials: true }
+      );
+      alert("Task marked complete ✅");
+      setActiveTasks((prev) => prev.filter((r) => r._id !== id));
+    } catch (err) {
+      alert("Error completing task");
+      console.error(err);
     }
-
-    setActiveTasks((prev) => prev.filter((t) => t._id !== id));
-  } catch (err) {
-    alert("Error completing task");
-    console.error(err);
-  }
-};
-
-
- const renderCard = (task, showButton, buttonLabel, buttonAction, buttonColor) => (
-  <div
-    key={task._id}
-    className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 flex gap-6 items-center"
-  >
-    <img
-      src={`${backendURL}/donation/image/${task.imageFileId}`}
-      alt="Donation"
-      className="w-32 h-32 object-cover rounded-md border border-gray-300"
-      onError={(e) => (e.target.style.display = "none")}
-    />
-
-    <div className="flex-1 space-y-2">
-      <div className="flex justify-between items-start">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800">
-            {task.itemName || task.item}
-          </h3>
-          <p className="text-sm text-gray-500">{task.quantity} item(s)</p>
-        </div>
-        {task.status && (
-          <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
-            {task.status}
-          </span>
-        )}
-      </div>
-
-      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-gray-600">
-        <div><strong>Condition:</strong> {task.condition}</div>
-        <div><strong>Date:</strong> {task.pickupDate ? new Date(task.pickupDate).toLocaleString() : "N/A"}</div>
-        <div><strong>Pickup:</strong> {task.pickupAddress || "N/A"}</div>
-        <div><strong>Drop:</strong> {task.dropLocation || "N/A"}</div>
-      </div>
-
-      {showButton && (
-        <div className="pt-2">
-          <button
-            className={`px-4 py-2 text-sm font-semibold rounded-lg ${buttonColor} text-white shadow hover:opacity-90 transition`}
-            onClick={() => buttonAction(task._id)}
-          >
-            {buttonLabel}
-          </button>
-        </div>
-      )}
-    </div>
-  </div>
-);
-
+  };
 
   return (
-   <div className="min-h-screen bg-gray-50 p-6 max-w-7xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold mb-8 text-green-700 text-center">
         Volunteer Dashboard
       </h1>
 
-      {/* Requests */}
-     <section className="bg-white-100 rounded-2xl shadow-xl p-6 mb-6 border-l-4 border-green-600">
-
-
+      {/* New Pickup & Drop Requests */}
+      <div className="bg-white rounded-2xl shadow-md p-6 mb-6 border-l-4 border-green-600">
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-semibold flex items-center">
             <FontAwesomeIcon icon={faTruckFast} className={iconStyle} />
@@ -188,18 +124,28 @@ export default function VolunteerDashboard() {
         {showTasks && (
           <div className="mt-4 space-y-4">
             {loading && <p>Loading...</p>}
-            {!loading && requests.length === 0 && <p>No available tasks currently.</p>}
-            {requests.map((req) =>
-              renderCard(req, true, "Accept", handleAccept, "bg-green-600")
+            {!loading && requests.length === 0 && (
+              <p>No available tasks currently.</p>
             )}
+            {requests.map((req) => (
+              <div key={req._id} className="p-4 border rounded-xl shadow">
+                <p><strong>From:</strong> {req.pickupLocation}</p>
+                <p><strong>To:</strong> {req.dropLocation}</p>
+                <p><strong>Item:</strong> {req.item}</p>
+                <button
+                  className="mt-2 bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                  onClick={() => handleAccept(req._id)}
+                >
+                  Accept
+                </button>
+              </div>
+            ))}
           </div>
         )}
-      </section>
+      </div>
 
-      {/* Active */}
-      <section className="bg-gray-100 rounded-2xl shadow-xl p-6 mb-6 border-l-4 border-green-600">
-
-
+      {/* My Active Deliveries */}
+      <div className="bg-white rounded-2xl shadow-md p-6 mb-6 border-l-4 border-green-600">
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-semibold flex items-center">
             <FontAwesomeIcon icon={faBox} className={iconStyle} />
@@ -215,18 +161,26 @@ export default function VolunteerDashboard() {
         {showActive && (
           <div className="mt-4 space-y-4">
             {activeTasks.length === 0 && <p>No active deliveries.</p>}
-            {activeTasks.map((task) =>
-              renderCard(task, true, "Mark Complete", handleComplete, "bg-blue-600")
-            )}
+            {activeTasks.map((task) => (
+              <div key={task._id} className="p-4 border rounded-xl shadow">
+                <p><strong>From:</strong> {task.pickupLocation}</p>
+                <p><strong>To:</strong> {task.dropLocation}</p>
+                <p><strong>Item:</strong> {task.item}</p>
+                <button
+                  className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                  onClick={() => handleComplete(task._id)}
+                >
+                  Mark Complete
+                </button>
+              </div>
+            ))}
           </div>
         )}
-      </section>
+      </div>
 
-      {/* Completed */}
-      <section className="bg-gray-100 rounded-2xl shadow-xl p-6 mb-6 border-l-4 border-green-600">
-
-      
-       <div className="flex justify-between items-center mb-2">
+      {/* Completed Deliveries */}
+      <div className="bg-white rounded-2xl shadow-md p-6 mb-6 border-l-4 border-green-600">
+        <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-semibold flex items-center">
             <FontAwesomeIcon icon={faClipboardCheck} className={iconStyle} />
             Completed Deliveries
@@ -241,13 +195,38 @@ export default function VolunteerDashboard() {
         {showHistory && (
           <div className="mt-4 space-y-4">
             {completedTasks.length === 0 && <p>No completed deliveries yet.</p>}
-            {completedTasks.map((task) =>
-              renderCard(task, false, "", null, "")
-            )}
+            {completedTasks.map((task) => (
+              <div key={task._id} className="p-4 border rounded-xl shadow">
+                <p><strong>From:</strong> {task.pickupLocation}</p>
+                <p><strong>To:</strong> {task.dropLocation}</p>
+                <p><strong>Item:</strong> {task.item}</p>
+                <p><strong>Status:</strong> {task.status}</p>
+              </div>
+            ))}
           </div>
         )}
-      </section>
+      </div>
 
+      {/* Delivery Preferences */}
+      <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-green-600">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-xl font-semibold flex items-center">
+            <FontAwesomeIcon icon={faGear} className={iconStyle} />
+            Delivery Preferences
+          </h2>
+          <button
+            onClick={() => setShowPrefs(!showPrefs)}
+            className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+          >
+            {showPrefs ? "Hide" : "Show"}
+          </button>
+        </div>
+        {showPrefs && (
+          <div className="mt-4">
+            <p>Edit delivery radius, available days, preferred item types here.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
