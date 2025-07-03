@@ -1,5 +1,5 @@
 const PendingDonation = require("../models/pendingDonationModel");
-
+const Donation = require("../models/postDonationModel")
 const getPendingDonations = async (req, res) => {
   try {
     const donations = await PendingDonation.find({});
@@ -12,7 +12,9 @@ const getPendingDonations = async (req, res) => {
 const approveDonation = async (req, res) => {
   try {
     const { id } = req.params;
-
+    const donation = PendingDonation.findById(id);
+    const approvedDonation = new Donation(donation._doc);
+    await approvedDonation.save();
     const updated = await PendingDonation.findByIdAndUpdate(
       id,
       { status: 'approved' },
@@ -20,12 +22,12 @@ const approveDonation = async (req, res) => {
     );
 
     if (!updated) {
-      return res.status(404).json({ message: 'Donation not found' });
+      return res.status(404).json({ message: 'donation not found' });
     }
 
-    res.json({ message: 'Donation approved', donation: updated });
+    res.json({ message: 'donation approved', donation: updated });
   } catch (error) {
-    res.status(500).json({ message: 'Approval failed' });
+    res.status(500).json({ message: 'approval failed' });
   }
 };
 
@@ -39,15 +41,14 @@ const rejectDonation = async (req, res) => {
       { status: 'rejected', reason },
       { new: true }
     );
-
     if (!updated) {
-      return res.status(404).json({ message: 'Donation not found' });
+      return res.status(404).json({ message: 'donation not found' });
     }
 
-    res.json({ message: 'Donation rejected', donation: updated });
+    res.json({ message: 'donation rejected', donation: updated });
   } catch (error) {
-    console.error('Rejection error:', error);
-    res.status(500).json({ message: 'Rejection failed' });
+    console.error('rejection error:', error);
+    res.status(500).json({ message: 'rejection failed' });
   }
 };
 
