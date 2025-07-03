@@ -3,7 +3,8 @@ const Donation = require("../models/postDonationModel")
 const getPendingDonations = async (req, res) => {
   try {
     const donations = await PendingDonation.find({});
-    res.json(donations);
+    const pendingDonations = donations.filter(d => d.status === "pending");
+    res.json(pendingDonations);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch donations' });
   }
