@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import logo from '../assets/logo.png';
+import { useNavigate } from "react-router-dom";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const navigat = useNavigate();
   const toggleMenu = () => setIsOpen(!isOpen);
   const handlelogout = () => {
     const token = localStorage.getItem("token");
@@ -13,6 +14,7 @@ const Navbar = () => {
       return;
     }
     localStorage.removeItem("token");
+    navigat("/login")
 
   }
   return (
