@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const donation = new mongoose.Schema({
-  donor: { type: String, required: true }, 
+  donor: { type:  mongoose.Schema.Types.ObjectId,   ref: 'User', required: true }, 
   itemName: { type: String, required: true },
   quantity: { type: String, required: true },
   condition: { type: String, enum: ['New', 'Good', 'Used'], required: true },

@@ -13,7 +13,7 @@ const postDonation = async(req, res) =>{
       imageFileId 
     } = req.body;
     const donation = new Donation({
-        donor,
+         donor: req.user.id, 
         itemName, 
         quantity, 
         condition,
@@ -31,14 +31,17 @@ const postDonation = async(req, res) =>{
   res.status(500).json({ error: 'Failed to save donation' });
     }
 }
+const getMyDonations = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log("Fetching donations for user:", userId);
 
-const getMyDonations = async(req, res) =>{
-    try {
-      const userId = req.user.id;
-      const donations = await Donation.find({donor:userId});
-      res.status(200).json(donations);
-    } catch (error) {
-          res.status(500).json({ message: 'Server error' });
-    }
-}
+    const donations = await Donation.find({ donor: userId });
+    res.status(200).json(donations);
+  } catch (error) {
+    console.error("getMyDonations error:", error); 
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 module.exports = {postDonation, getMyDonations};
