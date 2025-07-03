@@ -8,6 +8,6 @@ router.post("/postDonation", middlware,postDonation.postDonation);
 router.get("/getDonations", getDonation);
 router.get("/image/:id", getImage); 
 
-router.post("/pending-donations", postDonation.postDonation)
+// router.post("/pending-donations", postDonation.postDonation)
 router.get("/mydonations",middlware,  postDonation.getMyDonations);
 module.exports = router;

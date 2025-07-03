@@ -13,6 +13,7 @@ import MyRequests from "./pages/requestor/MyRequests";
 import PostDonations from "./pages/dashboards/PostDonations";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import DonationDashboard from "./pages/dashboards/DonationDashboard";
+import MyDonations from "./pages/dashboards/MyDonations";
 const App = () => {
   return (
     <>
@@ -31,6 +32,8 @@ const App = () => {
         <Route path="/post-donations" element={<PostDonations />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/donor-dashboard" element={<DonationDashboard />} />
+        <Route path="/my-donations" element={<MyDonations />} />
+
 
       </Routes>
     </>

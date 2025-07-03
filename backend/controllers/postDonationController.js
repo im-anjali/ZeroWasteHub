@@ -34,7 +34,6 @@ const postDonation = async(req, res) =>{
 const getMyDonations = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log("Fetching donations for user:", userId);
 
     const donations = await Donation.find({ donor: userId });
     res.status(200).json(donations);

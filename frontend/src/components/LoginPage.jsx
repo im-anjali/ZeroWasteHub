@@ -41,7 +41,7 @@ const handleLogin = async () => {
         navigate("/ngo-dashboard");
         break;
       case "donor":
-        navigate("/donations");
+        navigate("/donor-dashboard");
         break;
       case "volunteer":
         navigate("/volunteer-dashboard");

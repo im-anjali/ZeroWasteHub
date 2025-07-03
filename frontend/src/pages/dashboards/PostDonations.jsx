@@ -31,14 +31,17 @@ function PostDonations() {
     try {
       const imgData = new FormData();
       imgData.append('files', imageFile);
-
+      const token = localStorage.getItem("token")
       const uploadRes = await axios.post('http://localhost:5000/api/upload', imgData);
       const imageFileId = uploadRes.data.files[0].imageFileId;
 
       const donationData = { ...formData, imageFileId };
 
-      const donationRes = await axios.post(' http://localhost:5000/donation/pending-donations', donationData);
-
+        await axios.post('http://localhost:5000/donation/postDonation', donationData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setMessage(' Donation posted successfully!');
     } catch (error) {
       console.error(error);
@@ -51,7 +54,7 @@ function PostDonations() {
       <h2 className="text-2xl font-bold text-green-800 mb-6 text-center">Post a Donation</h2>
       
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
+        {/* <input
           type="text"
           name="donor"
           placeholder="Your User ID"
@@ -59,7 +62,7 @@ function PostDonations() {
           onChange={handleChange}
           className="w-full p-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
           required
-        />
+        /> */}
         <input
           type="text"
           name="itemName"
