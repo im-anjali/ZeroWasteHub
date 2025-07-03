@@ -5,6 +5,7 @@ function MyDonations() {
   const [donations, setDonations] = useState([]);
   const [filter, setFilter] = useState('pending'); 
   const [loading, setLoading] = useState(true);
+  const [reason , setReason] = useState("");
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -72,6 +73,7 @@ function MyDonations() {
                 <p><strong>Reason:</strong> {donation.reason}</p>
               )}
               <p><strong>Pickup:</strong> {donation.pickupAddress}</p>
+               <p><strong>Reason:</strong> {donation.reason}</p>
               <p><strong>Date:</strong> {new Date(donation.pickupDate).toLocaleDateString()}</p>
             </div>
           ))}
