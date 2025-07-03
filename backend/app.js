@@ -4,20 +4,17 @@ const session = require('express-session');
 const passport = require('passport');
 const cors = require('cors');
 const connectDB = require('./connectDB/connectdb');
-require('./config/passport'); // Google strategy
-
-// Route imports
+require('./config/passport'); // Passport config (Google Strategy)
 const authRoutes = require('./routes/userRoutes');
-const oauthRoutes = require('./routes/googleOAuthRoutes');
-const uploadImage = require('./routes/imageUploadRoutes');
-const donationRoutes = require('./routes/donationRoutes');
-const adminRoutes = require('./routes/adminRoutes');
-const volunteerRoutes = require('./routes/volunteer'); // ✅ FIXED: Import and register earlier
-
-// Connect to DB
-connectDB();
-
+const oauthRoutes = require('./routes/googleOAuthRoutes'); // Your Google OAuth routes
+const uploadImage = require('./routes/imageUploadRoutes')
+const multer = require('multer');
+const { MongoClient, GridFSBucket } = require('mongodb');
 const app = express();
+const donationRoutes = require('./routes/donationRoutes')
+const adminRoutes = require('./routes/adminRoutes');
+// Connect to MongoDB
+connectDB();
 
 // Middlewares
 app.use(express.json());
@@ -35,24 +32,27 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Mount routes
+// Routes
 app.use('/api/auth', authRoutes);
-app.use('/', oauthRoutes);
-app.use('/api', uploadImage);
+app.use('/', oauthRoutes);// All /auth/google routes handled here
+app.use("/api", uploadImage);
 app.use('/donation', donationRoutes);
-app.use('/admin', adminRoutes);
-app.use('/api/volunteer', volunteerRoutes); // ✅ FIXED: Moved to correct place
-
+app.use('/admin',adminRoutes );
 // Default route
 app.get('/', (req, res) => {
-  res.send('ZeroWasteHub Auth API running');
+  res.send(' ZeroWasteHub Auth API running');
 });
 
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(` Server running on http://localhost:${PORT}`);
 });
-
-console.log('Loaded Passport strategies:', Object.keys(passport._strategies));
-
+console.log(' Loaded Passport strategies:', Object.keys(passport._strategies));
 module.exports = app;
+
+//vol dashboard
+const volunteerRoutes = require('./routes/volunteer');
+app.use('/api/volunteer', volunteerRoutes);
+
+
