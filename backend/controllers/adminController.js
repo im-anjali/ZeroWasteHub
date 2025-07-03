@@ -12,7 +12,7 @@ const getPendingDonations = async (req, res) => {
 const approveDonation = async (req, res) => {
   try {
     const { id } = req.params;
-    const donation = PendingDonation.findById(id);
+    const donation = await PendingDonation.findById(id);
     const approvedDonation = new Donation(donation._doc);
     await approvedDonation.save();
     const updated = await PendingDonation.findByIdAndUpdate(
@@ -34,7 +34,7 @@ const approveDonation = async (req, res) => {
 const rejectDonation = async (req, res) => {
   try {
     const { id } = req.params;
-    const { reason } = req.body;
+    const { reason } = req.body || {};
 
     const updated = await PendingDonation.findByIdAndUpdate(
       id,

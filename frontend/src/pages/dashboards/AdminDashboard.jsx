@@ -4,6 +4,7 @@ import axios from 'axios';
 const AdminDashboard = () => {
   const [donations, setDonations] = useState([]);
   const [selectedDonations, setSelectedDonations] = useState({});
+  const [rejectionReasons, setRejectionReasons] = useState({});
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -24,9 +25,21 @@ const AdminDashboard = () => {
       ...prev,
       [id]: action
     }));
+
+    if (action === 'reject') {
+      setRejectionReasons((prev) => ({
+        ...prev,
+        [id]: prev[id] || ""
+      }));
+    } else {
+      setRejectionReasons((prev) => {
+        const updated = { ...prev };
+        delete updated[id];
+        return updated;
+      });
+    }
   };
 
-  // Submit all selected approve/reject actions
   const handleSubmitActions = async () => {
     try {
       const actions = Object.entries(selectedDonations);
@@ -35,13 +48,17 @@ const AdminDashboard = () => {
         if (action === 'approve') {
           await axios.post(`http://localhost:5000/admin/approve/${id}`);
         } else if (action === 'reject') {
-          await axios.delete(`http://localhost:5000/admin/delete/${id}`);
+          const reason = rejectionReasons[id] || "No reason provided";
+          await axios.delete(`http://localhost:5000/admin/delete/${id}`, {
+            data: { reason },
+          });
         }
       }
 
       setMessage('Actions processed successfully.');
       setSelectedDonations({});
-      fetchPendingDonations(); // refresh list
+      setRejectionReasons({});
+      fetchPendingDonations();
     } catch (err) {
       console.error('Error processing actions:', err);
       setMessage('An error occurred while processing actions.');
@@ -50,7 +67,9 @@ const AdminDashboard = () => {
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-green-800 mb-6 text-center">Admin Dashboard - Pending Donations</h1>
+      <h1 className="text-3xl font-bold text-green-800 mb-6 text-center">
+        Admin Dashboard - Pending Donations
+      </h1>
 
       {message && (
         <div className="mb-4 p-3 text-center bg-green-100 text-green-800 rounded shadow">
@@ -67,13 +86,11 @@ const AdminDashboard = () => {
               key={donation._id}
               className="bg-white p-4 rounded-xl shadow-md border border-green-200"
             >
-            
-         <img
-  src={`http://localhost:5000/api/image/${donation.imageFileId}`}
-  alt="Donation Item"
-  className="w-full h-40 object-cover rounded"
-/>
-
+              <img
+                src={`http://localhost:5000/api/image/${donation.imageFileId}`}
+                alt="Donation Item"
+                className="w-full h-40 object-cover rounded"
+              />
 
               <p><strong>Item:</strong> {donation.itemName}</p>
               <p><strong>Quantity:</strong> {donation.quantity}</p>
@@ -82,26 +99,43 @@ const AdminDashboard = () => {
               <p><strong>Date:</strong> {new Date(donation.pickupDate).toLocaleDateString()}</p>
               <p><strong>Donor ID:</strong> {donation.donor}</p>
 
-              <div className="mt-4 space-y-2">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name={`action-${donation._id}`}
-                    onChange={() => handleCheckboxChange(donation._id, 'approve')}
-                    checked={selectedDonations[donation._id] === 'approve'}
-                  />
+              <div className="mt-4 flex flex-col gap-2">
+                <button
+                  onClick={() => handleCheckboxChange(donation._id, 'approve')}
+                  className={`px-4 py-2 rounded font-semibold ${
+                    selectedDonations[donation._id] === 'approve'
+                      ? 'bg-green-700 text-white'
+                      : 'bg-green-100 text-green-800 hover:bg-green-200'
+                  }`}
+                >
                   Approve
-                </label>
+                </button>
 
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name={`action-${donation._id}`}
-                    onChange={() => handleCheckboxChange(donation._id, 'reject')}
-                    checked={selectedDonations[donation._id] === 'reject'}
-                  />
+                <button
+                  onClick={() => handleCheckboxChange(donation._id, 'reject')}
+                  className={`px-4 py-2 rounded font-semibold ${
+                    selectedDonations[donation._id] === 'reject'
+                      ? 'bg-red-600 text-white'
+                      : 'bg-red-100 text-red-800 hover:bg-red-200'
+                  }`}
+                >
                   Reject
-                </label>
+                </button>
+
+                {selectedDonations[donation._id] === 'reject' && (
+                  <textarea
+                    placeholder="Enter rejection reason"
+                    value={rejectionReasons[donation._id] || ''}
+                    onChange={(e) =>
+                      setRejectionReasons((prev) => ({
+                        ...prev,
+                        [donation._id]: e.target.value
+                      }))
+                    }
+                    className="mt-2 p-2 w-full border border-red-300 rounded resize-none"
+                    rows={3}
+                  />
+                )}
               </div>
             </div>
           ))}
@@ -113,7 +147,8 @@ const AdminDashboard = () => {
         <div className="mt-8 flex justify-center">
           <button
             onClick={handleSubmitActions}
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded shadow-md"
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded shadow-md disabled:opacity-50"
+            disabled={Object.keys(selectedDonations).length === 0}
           >
             Submit Selected Actions
           </button>

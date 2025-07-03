@@ -18,7 +18,7 @@ const handleLogin = async () => {
       `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
       { email, password, role: selectedRole.toLowerCase() }  
     );
-
+  
     const token = data.token;
     if (!token) {
       console.log("No token found");
@@ -31,7 +31,7 @@ const handleLogin = async () => {
       ...data.user,
       token: token,
     };
-
+    console.log(user)
     update(user); 
     switch (data.user.role) {
       case "admin":

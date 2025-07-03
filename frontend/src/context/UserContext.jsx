@@ -14,7 +14,7 @@ const UserProvider = ({ children }) => {
         setcurrUser(userData);
       } catch (err) {
         console.error("Invalid JSON in localStorage for 'user'", err);
-        localStorage.removeItem("user"); // Clean up corrupted data
+        localStorage.removeItem("user"); 
         setcurrUser(null);
       }
     }
