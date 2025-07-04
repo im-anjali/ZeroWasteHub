@@ -139,13 +139,13 @@ const TempBrowseItems = () => {
         </div>
       )}
   {showModal && (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-      <div className="relative bg-white border border-gray-300 rounded-lg shadow-lg p-4 w-[90%] max-w-md sm:w-80">
-        <h2 className="text-lg font-semibold mb-3 text-gray-800">
-          Use volunteer for delivery?
-        </h2>
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+    <div className="relative bg-white border border-gray-300 rounded-lg shadow-lg p-4 w-[90%] max-w-md sm:w-80">
+      <h2 className="text-lg font-semibold mb-3 text-gray-800">
+        Use volunteer for delivery?
+      </h2>
 
-        {useVolunteer && (
+      {useVolunteer && (
         <div className="mb-4">
           <label
             htmlFor="requestorAddress"
@@ -170,30 +170,33 @@ const TempBrowseItems = () => {
         </div>
       )}
 
-        <div className="flex flex-col sm:flex-row justify-between gap-2">
+        {!useVolunteer && ( 
+          <div className="flex flex-col sm:flex-row justify-between gap-2">
+            <button
+              onClick={() => setUseVolunteer(true)}
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex-1"
+            >
+              Yes
+            </button>
+            <button
+              onClick={() => handleVolunteerChoice(false)}
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 flex-1"
+            >
+              No
+            </button>
+          </div>
+        )}
+
         <button
-          onClick={() => setUseVolunteer(true)}
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex-1"
+          onClick={() => setModal(false)}
+          className="absolute top-2 right-3 text-gray-400 hover:text-gray-600 text-2xl font-bold"
         >
-          Yes
-        </button>
-        <button
-          onClick={() => handleVolunteerChoice(false)}
-          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 flex-1"
-        >
-          No
+          ×
         </button>
       </div>
-
-      <button
-        onClick={() => setModal(false)}
-        className="absolute top-2 right-3 text-gray-400 hover:text-gray-600 text-2xl font-bold"
-      >
-        ×
-      </button>
     </div>
-  </div>
   )}
+
 
 
     </div>
