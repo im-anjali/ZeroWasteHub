@@ -1,15 +1,30 @@
-// routes/volunteer.js
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const Delivery = require('../models/delivery'); // Schema for delivery requests
+const Delivery = require('../models/delivery');
 const User = require('../models/userModel');
+const { createVolAssignment } = require('../controllers/volunteerAssignment'); 
+const jwt = require('jsonwebtoken');
 
-// Middleware to verify role
+const authenticate = async (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    console.log("🔑 Token received in header:", token);
+    if (!token) return res.status(401).json({ message: 'Unauthorized' });
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log("✅ Decoded JWT:", decoded);
+        req.user = await User.findById(decoded.id);
+        if (!req.user) return res.status(401).json({ message: 'User not found' });
+        next();
+    } catch {
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+};
+
+
 const verifyVolunteer = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user._id);
-    if (user?.role !== 'volunteer') {
+    if (req.user?.role !== 'volunteer') {
       return res.status(403).json({ message: 'Access denied' });
     }
     next();
@@ -18,24 +33,24 @@ const verifyVolunteer = async (req, res, next) => {
   }
 };
 
-// GET: All unassigned delivery requests
-router.get('/requests', verifyVolunteer, async (req, res) => {
+
+router.get('/requests', authenticate, verifyVolunteer, async (req, res) => {
   try {
-    const tasks = await Delivery.find({ status: 'pending', volunteer: null });
+    const tasks = await Delivery.find({ status: 'pending', volunteerId: null });
     res.json(tasks);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching tasks' });
   }
 });
 
-// PUT: Accept a delivery task
-router.put('/accept/:id', verifyVolunteer, async (req, res) => {
+
+router.put('/accept/:id', authenticate, verifyVolunteer, async (req, res) => {
   try {
     const task = await Delivery.findById(req.params.id);
-    if (!task || task.volunteer) {
-      return res.status(400).json({ message: 'Invalid task' });
+    if (!task || task.volunteerId) {
+      return res.status(400).json({ message: 'Invalid task or already assigned' });
     }
-    task.volunteer = req.user._id;
+    task.volunteerId = req.user._id; // Set current volunteer
     task.status = 'active';
     await task.save();
     res.json({ message: 'Accepted successfully' });
@@ -44,20 +59,18 @@ router.put('/accept/:id', verifyVolunteer, async (req, res) => {
   }
 });
 
-// GET: Volunteer active deliveries
-router.get('/active', verifyVolunteer, async (req, res) => {
+router.get('/active', authenticate, verifyVolunteer, async (req, res) => {
   try {
-    const active = await Delivery.find({ volunteer: req.user._id, status: 'active' });
+    const active = await Delivery.find({ volunteerId: req.user._id, status: 'active' });
     res.json(active);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching active deliveries' });
   }
 });
 
-// PUT: Mark delivery as completed
-router.put('/complete/:id', verifyVolunteer, async (req, res) => {
+router.put('/complete/:id', authenticate, verifyVolunteer, async (req, res) => {
   try {
-    const task = await Delivery.findOne({ _id: req.params.id, volunteer: req.user._id });
+    const task = await Delivery.findOne({ _id: req.params.id, volunteerId: req.user._id });
     if (!task) return res.status(404).json({ message: 'Task not found' });
 
     task.status = 'completed';
@@ -68,14 +81,15 @@ router.put('/complete/:id', verifyVolunteer, async (req, res) => {
   }
 });
 
-// GET: Delivery history for the volunteer
-router.get('/history', verifyVolunteer, async (req, res) => {
+router.get('/history', authenticate, verifyVolunteer, async (req, res) => {
   try {
-    const history = await Delivery.find({ volunteer: req.user._id, status: 'completed' });
+    const history = await Delivery.find({ volunteerId: req.user._id, status: 'completed' });
     res.json(history);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching history' });
   }
 });
+
+router.post('/createVolTask', authenticate, createVolAssignment);
 
 module.exports = router;
