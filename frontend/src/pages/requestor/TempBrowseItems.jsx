@@ -5,11 +5,14 @@ const TempBrowseItems = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true); 
-
+  const [showModal, setModal] = useState(false);
+  const [selectedDonation, setSelectedDonation] = useState(null);
+  const [requestorAddress, setRequestorAddress] = useState('');
+  const [useVolunteer, setUseVolunteer] = useState(null); 
   useEffect(() => {
     const fetchDonations = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/donation/getDonations`);
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/requestor/getDonations`);
         setDonations(response.data);
       } catch (error) {
         console.error('Error fetching donations:', error);
@@ -20,6 +23,54 @@ const TempBrowseItems = () => {
 
     fetchDonations();
   }, []);
+  
+  const handleRequestClick = (donation) =>{
+    setModal(true);
+    setSelectedDonation(donation)
+  }
+  const handleVolunteerChoice = async(choice) =>{
+    if(!selectedDonation)return;
+    if(choice){
+      if(!requestorAddress.trim()){
+        alert("Please enter address!");
+        return;
+      }
+      try{
+        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/volunteer/createVolTask`,
+          {
+            donationId: selectedDonation._id,
+            donorId: selectedDonation.donor._id,
+            donorAddr:selectedDonation.pickupAddress,
+            requestorAddr:requestorAddress
+          },{
+            headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}` 
+            } 
+        })
+          alert("Addresses sent to vol!");
+          setModal(false);
+          setSelectedDonation(null);
+          setUseVolunteer(null);
+        }catch(error){
+          console.log("Error", error);
+          alert("Failed");
+        }
+      }
+    else{
+      try{
+        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/requestor/completeDonation`,
+          {donationId:selectedDonation._id}
+        );
+        alert("Request sent successfully!");
+        setModal(false);
+        setSelectedDonation(null);
+      }catch(error){
+        console.log("Error in requesting donation", error);
+        alert("Failed to send request");
+      }
+    }
+  }
+
 
   const filteredDonations = donations.filter((item) =>
     item.itemName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -79,13 +130,72 @@ const TempBrowseItems = () => {
               <p className="text-sm text-gray-600 mb-3">
                 Pickup Date: <span className="font-medium">{new Date(item.pickupDate).toLocaleDateString()}</span>
               </p>
-              <button className="mt-2 px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition">
+              <button className="mt-2 px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition"
+              onClick = {() => handleRequestClick(item)}>
                 Request
               </button>
             </div>
           ))}
         </div>
       )}
+  {showModal && (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+      <div className="relative bg-white border border-gray-300 rounded-lg shadow-lg p-4 w-[90%] max-w-md sm:w-80">
+        <h2 className="text-lg font-semibold mb-3 text-gray-800">
+          Use volunteer for delivery?
+        </h2>
+
+        {useVolunteer && (
+        <div className="mb-4">
+          <label
+            htmlFor="requestorAddress"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Your Address:
+          </label>
+          <input
+            type="text"
+            id="requestorAddress"
+            value={requestorAddress}
+            onChange={(e) => setRequestorAddress(e.target.value)}
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+            placeholder="Enter your address"
+          />
+          <button
+            onClick={() => handleVolunteerChoice(true)}
+            className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
+          >
+            Submit Address
+          </button>
+        </div>
+      )}
+
+        <div className="flex flex-col sm:flex-row justify-between gap-2">
+        <button
+          onClick={() => setUseVolunteer(true)}
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex-1"
+        >
+          Yes
+        </button>
+        <button
+          onClick={() => handleVolunteerChoice(false)}
+          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 flex-1"
+        >
+          No
+        </button>
+      </div>
+
+      <button
+        onClick={() => setModal(false)}
+        className="absolute top-2 right-3 text-gray-400 hover:text-gray-600 text-2xl font-bold"
+      >
+        ×
+      </button>
+    </div>
+  </div>
+  )}
+
+
     </div>
   );
 };
