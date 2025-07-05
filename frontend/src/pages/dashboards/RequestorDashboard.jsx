@@ -39,12 +39,32 @@ const RequestorDashboard = () => {
           bg="bg-green-100"
         />
       </div><br/><br/>
-      <div className="mt-12 flex flex-col items-center">
-        <div className="w-40 h-40 rounded-full border-[10px] border-green-500 flex items-center justify-center bg-white shadow-md">
-          <span className="text-5xl font-extrabold text-green-600">3</span>
-        </div>
-        <p className="mt-4 text-base font-medium text-gray-700">Active Requests</p>
-      </div>
+      <div className="mt-12 max-w-sm mx-auto p-6 bg-white rounded-2xl shadow-md border border-gray-200">
+  <h3 className="text-lg font-semibold text-gray-800 text-center mb-4">
+    Request Summary
+  </h3>
+
+  <div className="flex justify-between items-center text-sm mb-2">
+    <span className="text-gray-600">Pending</span>
+    <span className="font-bold text-yellow-600">2</span>
+  </div>
+  <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+    <div className="bg-yellow-400 h-2.5 rounded-full w-[50%]"></div>
+  </div>
+
+  <div className="flex justify-between items-center text-sm mb-2">
+    <span className="text-gray-600">Delivered</span>
+    <span className="font-bold text-green-600">1</span>
+  </div>
+  <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+    <div className="bg-green-400 h-2.5 rounded-full w-[25%]"></div>
+  </div>
+
+  <p className="text-center text-gray-500 text-xs mt-2">
+    Total Requests: <span className="font-medium">3</span>
+  </p>
+</div>
+
     </div>
   );
 };

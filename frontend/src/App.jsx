@@ -14,6 +14,7 @@ import PostDonations from "./pages/dashboards/PostDonations";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import DonationDashboard from "./pages/dashboards/DonationDashboard";
 import MyDonations from "./pages/dashboards/MyDonations";
+import OAuthSuccess from "./components/OAuthSuccess";
 const App = () => {
   return (
     <>
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/donor-dashboard" element={<DonationDashboard />} />
         <Route path="/my-donations" element={<MyDonations />} />
+        <Route path="/oauth-success" element={<OAuthSuccess />} />
 
 
       </Routes>
