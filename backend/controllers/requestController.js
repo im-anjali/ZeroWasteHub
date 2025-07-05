@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { GridFSBucket } = require('mongodb');
 require('dotenv').config();
 const Donation = require('../models/donation');
-
+const Delivery = require('../models/delivery');
 let bucket; 
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -74,4 +74,17 @@ const completeDonation = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-module.exports = { getDonations, getImage, completeDonation};
+const getRequest = async(req, res) =>{
+  try{
+    const userId = req.user._id;
+    const deliveries = await Delivery.find({receiverId:userId})
+    .populate('donorId', 'name email') 
+    .populate('volunteerId', 'name email') 
+    .sort({ createdAt: -1 }); 
+    res.status(200).json(deliveries);
+  }catch(error){
+    console.error("Error fetching my requests:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+module.exports = { getDonations, getImage, completeDonation, getRequest};
