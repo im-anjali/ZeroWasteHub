@@ -1,11 +1,10 @@
-// models/userModel.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   googleId: String,
   name: String,
   email: { type: String, unique: true, required: true },
-  password: String, // blank for OAuth
+  password: String,
   role: { type: String, default: 'donor' }
 });
 

@@ -10,7 +10,7 @@ exports.getPendingDeliveries = async (req, res) => {
 };
 
 
-// GET /api/volunteer/active
+
 exports.getActiveDeliveries = async (req, res) => {
   try {
     const deliveries = await Delivery.find({ status: 'active', volunteerId: req.user.id });
@@ -20,7 +20,7 @@ exports.getActiveDeliveries = async (req, res) => {
   }
 };
 
-// GET /api/volunteer/history
+
 exports.getCompletedDeliveries = async (req, res) => {
   try {
     const deliveries = await Delivery.find({ status: 'completed', volunteerId: req.user.id });
@@ -30,7 +30,7 @@ exports.getCompletedDeliveries = async (req, res) => {
   }
 };
 
-// PUT /api/volunteer/accept/:id
+
 exports.acceptDelivery = async (req, res) => {
   try {
     const delivery = await Delivery.findByIdAndUpdate(
@@ -44,7 +44,7 @@ exports.acceptDelivery = async (req, res) => {
   }
 };
 
-// PUT /api/volunteer/complete/:id
+
 exports.completeDelivery = async (req, res) => {
   try {
     const delivery = await Delivery.findByIdAndUpdate(
