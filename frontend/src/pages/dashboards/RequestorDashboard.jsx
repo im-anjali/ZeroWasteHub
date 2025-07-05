@@ -39,31 +39,13 @@ const RequestorDashboard = () => {
           bg="bg-green-100"
         />
       </div><br/><br/>
-      <div className="mt-12 max-w-sm mx-auto p-6 bg-white rounded-2xl shadow-md border border-gray-200">
-  <h3 className="text-lg font-semibold text-gray-800 text-center mb-4">
-    Request Summary
-  </h3>
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6 text-center">
+      <p className="italic text-gray-700">
+      “The greatest threat to our planet is the belief that someone else will save it.”
+      </p>
+      <p className="mt-2 font-bold text-blue-800">– Robert Swan</p>
+      </div>
 
-  <div className="flex justify-between items-center text-sm mb-2">
-    <span className="text-gray-600">Pending</span>
-    <span className="font-bold text-yellow-600">2</span>
-  </div>
-  <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-    <div className="bg-yellow-400 h-2.5 rounded-full w-[50%]"></div>
-  </div>
-
-  <div className="flex justify-between items-center text-sm mb-2">
-    <span className="text-gray-600">Delivered</span>
-    <span className="font-bold text-green-600">1</span>
-  </div>
-  <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-    <div className="bg-green-400 h-2.5 rounded-full w-[25%]"></div>
-  </div>
-
-  <p className="text-center text-gray-500 text-xs mt-2">
-    Total Requests: <span className="font-medium">3</span>
-  </p>
-</div>
 
     </div>
   );
