@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const middlware = require("../middleware/authmiddleware");
+const middleware = require("../middleware/authmiddleware");
 const requestor = require('../controllers/requestController');
 
 router.get("/getDonations", requestor.getDonations);
