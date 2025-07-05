@@ -55,7 +55,7 @@ The application includes four types of users:
 ### 1. Clone the Repository
 
 ```bash
-git colne https://github.com/im-anjali/ZeroWasteHub.git
+git clone https://github.com/im-anjali/ZeroWasteHub.git
 cd ZeroWasteHub
 ```
 
