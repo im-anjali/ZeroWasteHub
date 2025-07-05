@@ -1,8 +1,18 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, ClipboardList } from 'lucide-react';
 
 const RequestorDashboard = () => {
+  const navigate = useNavigate();
+    useEffect(() => {
+      const user = JSON.parse(localStorage.getItem('user'));
+  
+      if (!user || user.role !== 'requestor') {
+        alert('Access denied. Only requestor can access this page.');
+        navigate('/login');
+      }
+    }, [navigate]);
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-6">
       {/* Heading */}

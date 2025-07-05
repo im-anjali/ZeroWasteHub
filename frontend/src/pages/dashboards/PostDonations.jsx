@@ -1,7 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useNavigate , useEffect} from 'react';
 import axios from 'axios';
 
 function PostDonations() {
+  const navigate = useNavigate();
+    useEffect(() => {
+      const user = JSON.parse(localStorage.getItem('user'));
+  
+      if (!user || user.role !== 'donor') {
+        alert('Access denied. Only donors can access this page.');
+        navigate('/login');
+      }
+    }, [navigate]);
   const [formData, setFormData] = useState({
     donor: '',
     itemName: '',

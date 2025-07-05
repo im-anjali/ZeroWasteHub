@@ -37,9 +37,7 @@ const handleLogin = async () => {
       case "admin":
         navigate("/admin-dashboard");
         break;
-      case "ngo":
-        navigate("/ngo-dashboard");
-        break;
+     
       case "donor":
         navigate("/donor-dashboard");
         break;
@@ -89,7 +87,6 @@ const handleLogin = async () => {
           Select role
         </option>
         <option value="admin">Admin</option>
-        <option value="ngo">NGO</option>
         <option value="donor">Donor</option>
         <option value="volunteer">Volunteer</option>
         <option value="requestor">Requestor</option>

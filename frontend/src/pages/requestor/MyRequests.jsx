@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 const MyRequests = () => {
   const [filter, setFilter] = useState('all'); // all | pending | delivered
   const [expandedId, setExpandedId] = useState(null);
-
+  const navigate = useNavigate();
+  useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+    
+        if (!user || user.role !== 'requestor') {
+          alert('Access denied. Only requestor can access this page.');
+          navigate('/login');
+        }
+      }, [navigate]);
   const mockRequests = [
     {
       _id: '1',

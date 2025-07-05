@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const TempBrowseItems = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -9,6 +11,15 @@ const TempBrowseItems = () => {
   const [selectedDonation, setSelectedDonation] = useState(null);
   const [requestorAddress, setRequestorAddress] = useState('');
   const [useVolunteer, setUseVolunteer] = useState(null); 
+  const navigate = useNavigate();
+  useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+    
+        if (!user || user.role !== 'requestor') {
+          alert('Access denied. Only requestor can access this page.');
+          navigate('/login');
+        }
+      }, [navigate]);
   useEffect(() => {
     const fetchDonations = async () => {
       try {

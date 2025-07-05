@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useNavigate } from 'react';
 import axios from 'axios';
 
 function MyDonations() {
@@ -7,7 +7,15 @@ function MyDonations() {
   const [loading, setLoading] = useState(true);
   const [reason , setReason] = useState("");
   const token = localStorage.getItem('token');
-
+  const navigate = useNavigate();
+    useEffect(() => {
+      const user = JSON.parse(localStorage.getItem('user'));
+  
+      if (!user || user.role !== 'donor') {
+        alert('Access denied. Only donors can access this page.');
+        navigate('/login');
+      }
+    }, [navigate]);
   useEffect(() => {
     fetchMyDonations();
   }, []);

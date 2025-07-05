@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,8 +8,18 @@ import {
   faClipboardCheck,
   faGear
 } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 export default function VolunteerDashboard() {
+  const navigate = useNavigate();
+    useEffect(() => {
+      const user = JSON.parse(localStorage.getItem('user'));
+  
+      if (!user || user.role !== 'volunteer') {
+        alert('Access denied. Only volunteer can access this page.');
+        navigate('/login');
+      }
+    }, [navigate]);
   const [showTasks, setShowTasks] = useState(false);
   const [showActive, setShowActive] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
