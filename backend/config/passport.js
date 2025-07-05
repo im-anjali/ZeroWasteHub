@@ -1,4 +1,3 @@
-// config/passport.js
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/userModel');
@@ -25,7 +24,7 @@ passport.use('google', new GoogleStrategy({
         if (user.role !== role) {
           user.role = role;
           await user.save();
-          console.log("✅ User saved:", user);
+          console.log("User saved:", user);
         }
         return done(null, user);
       }

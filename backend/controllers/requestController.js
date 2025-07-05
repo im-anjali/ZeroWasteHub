@@ -3,9 +3,8 @@ const { GridFSBucket } = require('mongodb');
 require('dotenv').config();
 const Donation = require('../models/donation');
 
-let bucket; // GridFS bucket instance
+let bucket; 
 
-// Connect to MongoDB and set up GridFS bucket only once
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((conn) => {
     const db = conn.connection.db;
@@ -13,6 +12,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
     console.log('MongoDB connected and GridFS bucket initialized.');
   })
   .catch((err) => console.error('MongoDB connection error:', err));
+
 
 const getImage = async (req, res) => {
   try {
@@ -25,7 +25,7 @@ const getImage = async (req, res) => {
       return res.status(404).send('Image not found');
     }
 
-    res.set('Content-Type', file.contentType || 'image/png'); // fallback
+    res.set('Content-Type', file.contentType || 'image/png'); 
 
     const downloadStream = bucket.openDownloadStream(fileId);
     downloadStream.pipe(res);
@@ -44,7 +44,6 @@ const getDonations = async (req, res) => {
       ...donation._doc,
       imageUrl: `${process.env.BACKEND_BASE_URL || 'http://localhost:5000'}/api/requestor/image/${donation.imageFileId}`
     }));
-
     res.status(200).json(donationsWithImageUrls);
   } catch (error) {
     console.error('Error fetching donations:', error);

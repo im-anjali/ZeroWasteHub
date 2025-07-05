@@ -1,7 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const router = express.Router();
-
+const jwt = require('jsonwebtoken');
 router.get('/auth/google', (req, res, next) => {
   req.session.selectedRole = req.query.role;
   req.session.authMode = req.query.mode;
@@ -13,6 +13,11 @@ router.get('/auth/google/callback',
     failureRedirect: 'http://localhost:5173/signup?error=oauth'
   }),
   (req, res) => {
+    const token = jwt.sign(
+      { _id: req.user._id, role: req.user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
     const routeMap = {
       admin: 'admin-dashboard',
       ngo: 'ngo-dashboard',
@@ -21,7 +26,7 @@ router.get('/auth/google/callback',
       requestor: 'requestor-dashboard'
     };
     const redirectPath = routeMap[req.user.role] || 'dashboard';
-    res.redirect(`http://localhost:5173/${redirectPath}`);
+    res.redirect(`http://localhost:5173/oauth-success?token=${token}&redirect=${redirectPath}`);
   }
 );
 
