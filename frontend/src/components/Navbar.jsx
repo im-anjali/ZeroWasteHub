@@ -43,7 +43,7 @@ const Navbar = () => {
         </ul>
       </div>
 
-      {/* Mobile Dropdown */}
+     
       {isOpen && (
         <ul className="md:hidden bg-green-500 px-4 pb-4 space-y-3 text-lg">
           <li><Link to="/about" onClick={toggleMenu}>About</Link></li>
