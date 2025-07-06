@@ -82,7 +82,7 @@ GOOGLE_CLIENT_ID=your-client-id-here
 GOOGLE_CLIENT_SECRET=your-client-secret-here
 GOOGLE_CALLBACK_URL=http://localhost:5000/auth/google/callback
 SESSION_SECRET=superstrongrandomsecretkey
-MONGO_URI=mongodb+srv://zerowastehub:hardproject@zerowastehub.kgpypbf.mongodb.net/test?retryWrites=true&w=majority&appName=zerowastehub
+MONGO_URI=yourmongourl
 PORT=5000
 JWT_SECRET=my_key
 DB_NAME=test
