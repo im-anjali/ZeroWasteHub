@@ -3,7 +3,6 @@ const router = express.Router();
 const volunteerController = require('../controllers/volunteerController');
 const  authenticate  = require('../middleware/authmiddleware');
 
-
 router.get('/requests', authenticate, volunteerController.getPendingDeliveries);
 router.get('/active', authenticate, volunteerController.getActiveDeliveries);
 router.get('/history', authenticate, volunteerController.getCompletedDeliveries);

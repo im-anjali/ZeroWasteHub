@@ -2,9 +2,17 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/userModel');
 
-passport.serializeUser((user, done) => done(null, user.id));
-passport.deserializeUser((id, done) => {
-  User.findById(id).then(user => done(null, user));
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
 });
 
 passport.use('google', new GoogleStrategy({
@@ -20,28 +28,35 @@ passport.use('google', new GoogleStrategy({
     let user = await User.findOne({ email: profile.emails[0].value });
 
     if (mode === 'signup') {
-      if (user) {
+      if (user) {  
         if (user.role !== role) {
           user.role = role;
           await user.save();
-          console.log("User saved:", user);
+          console.log("User updated:", user);
         }
-        return done(null, user);
+      } else {
+        user = new User({
+          googleId: profile.id,
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          role: role
+        });
+        await user.save();
+        console.log("New user created:", user);
       }
 
-      user = new User({
-        googleId: profile.id,
-        name: profile.displayName,
-        email: profile.emails[0].value,
-        role: role || 'donor'
-      });
-
-      await user.save();
-      return done(null, user);
+      const freshUser = await User.findById(user._id);
+      return done(null, freshUser);
     }
 
-    return done(null, false);
+    if (user) {
+      return done(null, user);
+    } else {
+      console.log("User not found during login.");
+      return done(null, false, { message: "No user found." });
+    }
   } catch (err) {
+    console.error("Error in Google OAuth:", err);
     return done(err, null);
   }
 }));
