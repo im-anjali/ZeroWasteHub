@@ -1,22 +1,47 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/UserContext";
+import { useContext } from "react";
 
 const SignupForm = () => {
   const [selectedRole, setSelectedRole] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-
+  const {update} = useContext(AuthContext);
+  const navigate = useNavigate();
   const handleSignup = async () => {
+
     try {
       const url = `http://localhost:5000/api/auth/signup`;
       const payload = { name, email, password, role: selectedRole };
       const { data } = await axios.post(url, payload);
       localStorage.setItem("token", data.token);
-      alert(`Signup success as ${data.user.role}`);
+       localStorage.setItem("token", data.token);
+      const user = { ...data.user, token: data.token };
+      console.log("Signed up user:", user);
+      update(user)
+      switch (data.user.role) {
+        case "admin":
+          navigate("/admin-dashboard");
+          break;
+        case "donor":
+          navigate("/donor-dashboard");
+          break;
+        case "volunteer":
+          navigate("/volunteer-dashboard");
+          break;
+        case "receiver":
+        case "requestor":
+          navigate("/requestor-dashboard");
+          break;
+        default:
+          navigate("/dashboard");
+          break;
+      }
     } catch (err) {
-      alert(err.response?.data?.message || "Signup error");
+      console.log(err.response?.data?.message );
     }
   };
 

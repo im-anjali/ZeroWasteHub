@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useNavigate } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function MyDonations() {
   const [donations, setDonations] = useState([]);
