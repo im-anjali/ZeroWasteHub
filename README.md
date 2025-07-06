@@ -68,9 +68,18 @@ npm install
 
 Create a `.env` file inside the `backend/` folder with the following content:
 
+Set up your own Google OAuth2 credentials:
+
+- Go to [Google Cloud Console](https://console.cloud.google.com/).
+- Create a **new project** or **select an existing one**.
+- **Enable the Google+ API** under **APIs & Services > Library**.
+- **Create OAuth2 credentials**:
+  - Choose **Web application** and add `http://localhost:5000/auth/google/callback` as an authorized redirect URI.
+- **Copy the Client ID** and **Client Secret** into your `.env` file.
+
 ```env
-GOOGLE_CLIENT_ID=930183081120-38sbdcst4lt3qmiiinrebm3c6ovuh0rg.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=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
+GOOGLE_CLIENT_ID=your-client-id-here
+GOOGLE_CLIENT_SECRET=your-client-secret-here
 GOOGLE_CALLBACK_URL=http://localhost:5000/auth/google/callback
 SESSION_SECRET=superstrongrandomsecretkey
 MONGO_URI=mongodb+srv://zerowastehub:hardproject@zerowastehub.kgpypbf.mongodb.net/test?retryWrites=true&w=majority&appName=zerowastehub
