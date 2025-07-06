@@ -82,7 +82,6 @@ const SignupForm = () => {
     Select role
   </option>
   <option value="admin">Admin</option>
-  <option value="ngo">NGO</option>
   <option value="donor">Donor</option>
   <option value="volunteer">Volunteer</option>
   <option value="requestor">Requestor</option>
