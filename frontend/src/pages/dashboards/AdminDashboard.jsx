@@ -21,7 +21,7 @@ const AdminDashboard = () => {
 
   const fetchPendingDonations = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/admin/pending-donations');
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/pending-donations`);
       setDonations(res.data);
     } catch (err) {
       console.error('Error fetching donations:', err);
@@ -54,10 +54,10 @@ const AdminDashboard = () => {
 
       for (const [id, action] of actions) {
         if (action === 'approve') {
-          await axios.post(`http://localhost:5000/admin/approve/${id}`);
+          await axios.post(`${import.meta.env.VITE_BACKEND_URL}/admin/approve/${id}`);
         } else if (action === 'reject') {
           const reason = rejectionReasons[id] || "No reason provided";
-          await axios.delete(`http://localhost:5000/admin/delete/${id}`, {
+          await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/admin/delete/${id}`, {
             data: { reason },
           });
         }
@@ -95,7 +95,7 @@ const AdminDashboard = () => {
               className="bg-white p-4 rounded-xl shadow-md border border-green-200"
             >
               <img
-                src={`http://localhost:5000/api/image/${donation.imageFileId}`}
+                src={`${import.meta.env.VITE_BACKEND_URL}/api/image/${donation.imageFileId}`}
                 alt="Donation Item"
                 className="w-full h-40 object-cover rounded"
               />

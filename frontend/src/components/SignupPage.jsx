@@ -14,7 +14,7 @@ const SignupForm = () => {
   const handleSignup = async () => {
 
     try {
-      const url = `http://localhost:5000/api/auth/signup`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`;
       const payload = { name, email, password, role: selectedRole };
       const { data } = await axios.post(url, payload);
       localStorage.setItem("token", data.token);

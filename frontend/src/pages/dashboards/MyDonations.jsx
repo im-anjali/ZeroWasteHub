@@ -23,7 +23,7 @@ function MyDonations() {
 
   const fetchMyDonations = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/donation/mydonations', {
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/donation/mydonations`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -70,7 +70,7 @@ function MyDonations() {
               className="bg-white p-4 rounded-xl shadow border border-green-200"
             >
               <img
-                src={`http://localhost:5000/api/image/${donation.imageFileId}`}
+                src={`${import.meta.env.VITE_BACKEND_URL}/api/image/${donation.imageFileId}`}
                 alt="Donation"
                 className="w-full h-40 object-cover rounded mb-4"
               />

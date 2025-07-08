@@ -42,12 +42,12 @@ function PostDonations() {
       const imgData = new FormData();
       imgData.append('files', imageFile);
       const token = localStorage.getItem("token")
-      const uploadRes = await axios.post('http://localhost:5000/api/upload', imgData);
+      const uploadRes = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/upload`, imgData);
       const imageFileId = uploadRes.data.files[0].imageFileId;
 
       const donationData = { ...formData, imageFileId };
 
-        await axios.post('http://localhost:5000/donation/postDonation', donationData, {
+        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/donation/postDonation`, donationData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
