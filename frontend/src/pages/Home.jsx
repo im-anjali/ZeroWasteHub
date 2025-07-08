@@ -53,7 +53,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Call to Action */}
       <section className="py-12 px-6 text-center">
         <h2 className="text-2xl font-semibold mb-4 text-green-700">Ready to make a difference?</h2>
         <p className="mb-6 text-lg">Create an account or log in to start donating or receiving today.</p>
