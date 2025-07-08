@@ -39,7 +39,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/', oauthRoutes);
 app.use("/api", uploadImage);
@@ -47,7 +46,6 @@ app.use('/donation', donationRoutes);
 app.use('/admin',adminRoutes );
 app.use('/api/volunteer', volunteerRoutes);
 app.use('/api/requestor', requestorRoutes);
-// Default route
 app.get('/', (req, res) => {
   res.send(' ZeroWasteHub Auth API running');
 });
