@@ -98,7 +98,7 @@ const SignupForm = () => {
         alert("Please select a role first.");
         return;
       }
-      window.location.href = `http://localhost:5000/auth/google?role=${selectedRole}&mode=signup`;
+      window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/google?role=${selectedRole}&mode=signup`;
       }}>Sign Up with Google</button>
 
       <p className="text-sm">

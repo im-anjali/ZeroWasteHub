@@ -16,7 +16,6 @@ const multer = require('multer');
 const { MongoClient, GridFSBucket } = require('mongodb');
 const app = express();
 
-// Connect to MongoDB
 connectDB();
 
 // Middlewares
